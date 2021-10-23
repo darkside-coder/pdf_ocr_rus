@@ -96,6 +96,9 @@ def detect_post_codes(data=test_data):
 def detect_addr(data=test_data):
     # для определения адресов
     pass
+def detect_names(data=test_data):
+    data = re.sub(r"\b[А-Я][а-я]+(ко|ла|на|ев|ин|ина|ева|ов|ова|ян|ей|ва|на|ич|ир|вy|го)\b", "<NAME>", data)
+    return data
 
 def detect_dates(text=test_data):
     # для определения дат
@@ -124,6 +127,7 @@ if __name__ == "__main__":
     data = detect_INN(data)
     data = detect_url(data)
     data = detect_money(data)
+    data = detect_names(data)
     print(data)
 
  
