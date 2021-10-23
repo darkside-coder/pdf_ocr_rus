@@ -3,3 +3,4 @@ doc_samples/*
 doc_txts/*
 jpegs/*
 temp/*
+__pycache__
