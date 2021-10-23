@@ -1,7 +1,7 @@
 import os, sys, shutil
 from pdf2image import convert_from_path
 from PIL import Image
-
+import logging
  
 
 def fileToJpeg():
@@ -25,5 +25,5 @@ def fileToJpeg():
                 pages = convert_from_path(file, 500, poppler_path='poppler-0.68.0\\bin')
                 for page_number, page in enumerate(pages):
                     file_jpg = os.path.join(dir_for_jpegs, str(page_number) + '.jpg')
-                    print(file_jpg)
+                    logging.info(f'Создание {file_jpg}')
                     page.save(file_jpg, 'JPEG')
