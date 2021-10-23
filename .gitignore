@@ -1,0 +1,5 @@
+venv
+doc_samples/*
+doc_txts/*
+jpegs/*
+temp/*
