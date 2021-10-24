@@ -21,3 +21,6 @@
 3) результат запроса текст из файла с удаленными персональными данными
 ###### Пример запроса
 ![postman_hack](https://user-images.githubusercontent.com/13415975/138608133-54d01142-2220-4f9e-9fdd-ee6f2549aaee.png)
+
+#### Структура решения
+![Структруа решения](https://user-images.githubusercontent.com/13415975/138608352-268b36fe-0989-4b01-a0cd-0eee2fda5750.jpg)
