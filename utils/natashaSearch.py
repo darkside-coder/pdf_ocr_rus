@@ -14,6 +14,7 @@ from natasha import (
     AddrExtractor,
     Doc
 )
+import re
 
 test_data = "Это некоторый текст с персональными данными. Старченко Даниэлла Геннадьевна \
             родилась в г.Белгород. Место прописки: Белгородская обл. Белгородский р-н. п.Северный \
@@ -35,36 +36,98 @@ test_data2 = '''
 Благодарю прекрасного учителя 1"А" класса - Волкову Наталью Николаевну, нашего наставника, тьютора - Ларису Ивановну, за огромнейший труд, чуткое отношение к детям, взаимопонимание! Огромное спасибо!
 '''
 
+def find_names(names_extractor,line):
+    result = []
+    names = names_extractor.find(line)
+    if names is not None:
+        first_name = names_extractor.find(line).fact.first
+        last_name = names_extractor.find(line).fact.last
+        middle = names_extractor.find(line).fact.middle
+        if first_name is not None:
+            result.append(first_name)
+        if last_name is not None:
+            result.append(last_name)
+        if middle is not None:
+            result.append(middle)
+    return result
+
+def find_addrs(addr_extractor, line):
+    result = []
+    addrs = addr_extractor.find(line)
+    if addrs is not None:
+        data = addrs.fact.parts
+        for i in range(len(data)):
+            result.append(addrs.fact.parts[i].value)
+    return result
+
+def find_dates(dates_extractor, line):
+    result = []
+    dates = dates_extractor.find(line)
+    #тут нужно сделать так, чтоб дата собиралась в дату сразу
+    if dates is not None:
+        year = dates.fact.year
+        if year is not None:
+            result.append(year)
+        month = dates.fact.month
+        if month is not None:
+            result.append(month)
+        day = dates.fact.day
+        if day is not None:
+            result.append(day)
+    return result
+
+def find_money(money_extractor, line):
+    result = []
+    money = money_extractor.find(line)
+    if money is not None:
+        print(money)
+    return result
+
+def mute_text(data, addrs, money, names, dates):
+    for i in range(len(data)):
+        for elem in addrs:
+            if data[i].startswith(str(elem)):
+                data[i] =  "<ADDR>"
+
+        for elem in money:
+            if data[i].startswith(str(elem)):
+                data[i] =  "<MONEY>"
+        
+        for elem in names:
+            if data[i].startswith(str(elem)):
+                data[i] =  "<NAME>"
+        for elem in dates:
+            if data[i].startswith(str(elem)):
+                data[i] =  "<DATE>"
+    return " ".join(data)
+
 def search(text=test_data):
     segmenter = Segmenter()
     morph_vocab = MorphVocab()
-
     emb = NewsEmbedding()
     morph_tagger = NewsMorphTagger(emb)
     syntax_parser = NewsSyntaxParser(emb)
     ner_tagger = NewsNERTagger(emb)
-
+    # типы данных, которые можно парсить
     names_extractor = NamesExtractor(morph_vocab)
     dates_extractor = DatesExtractor(morph_vocab)
     money_extractor = MoneyExtractor(morph_vocab)
     addr_extractor = AddrExtractor(morph_vocab)
-
-    doc = Doc(text)
-    doc.segment(segmenter) 
-    doc.tag_morph(morph_tagger)
-    doc.parse_syntax(syntax_parser)
-    doc.tag_ner(ner_tagger)
-
-    #находим даты в тексте
-    # dates = dates_extractor(text)
-    # facts = [i.fact.as_json for i in dates]
-    # print(facts)
-    
-    #находим имена
-    for span in doc.spans:
-        if span.type == PER:
-            span.extract_fact(names_extractor)
-    names_dict = {_.normal: _.fact.as_dict for _ in doc.spans if _.fact}
+    sentences = text.split(" ")
+    lines = [sentences[i:i + 9] for i in range(0, len(sentences), 9)]
+    names = []
+    addrs = []
+    money = []
+    dates = []
+    for line in lines:
+        line = " ".join(line)
+        names  += find_names(names_extractor, line)
+        money += find_money(money_extractor, line)
+        addrs += find_addrs(addr_extractor, line)
+        dates += find_dates(dates_extractor, line)
+    result = mute_text(sentences, addrs, money, names, dates)
+    print(result)
+    return result
 
 if __name__ == '__main__':
     search()
