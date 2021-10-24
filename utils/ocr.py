@@ -2,7 +2,11 @@ import logging
 import pytesseract
 import os, sys, shutil
 from PIL import Image, ImageEnhance, ImageFilter
+
+import removePD as pd_clear
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
+
 
 def jpegToText():
     for (dirpath, dirnames, filenames) in os.walk('jpegs'):
@@ -32,6 +36,7 @@ def jpegToText():
                         temp_jpeg =os.path.join('temp', 'temp.jpg')
                         im.save(temp_jpeg)
                         text = pytesseract.image_to_string(Image.open(temp_jpeg), lang='rus')
+                        text = pd_clear.removePersonalData(text)
                         f.write(text)
                         # text = str(((pytesseract.image_to_string(Image.open(fullname_file_jpg)))))
             f.close()

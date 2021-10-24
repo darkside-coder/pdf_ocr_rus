@@ -4,6 +4,20 @@ from PIL import Image
 import logging
  
 
+def fileTransformAPI(file, filename):
+    filename_without_extension, file_extension = os.path.splitext(filename)
+    dir_for_jpegs = os.path.join('api', os.path.join('jpegs', filename_without_extension))
+    if os.path.exists(dir_for_jpegs):
+        shutil.rmtree(dir_for_jpegs, ignore_errors=True)
+    os.makedirs(dir_for_jpegs)
+    pages = convert_from_path(file, 500, poppler_path='poppler-0.68.0\\bin')
+    for page_number, page in enumerate(pages):
+        print(f'Распознование {filename} {page_number}')
+        file_jpg = os.path.join(dir_for_jpegs, filename + '_' + str(page_number) + '.jpg')
+        logging.info(f'Создание {file_jpg}')
+        page.save(file_jpg, 'JPEG')
+    return dir_for_jpegs
+    
 def fileToJpeg():
     # получаем список всех доступных для распознования файлов
     files = [] 
@@ -17,7 +31,7 @@ def fileToJpeg():
         if os.path.isfile(file):
             if file_extension == '.pdf':
                 filename_without_extension, file_extension = os.path.splitext(filename)
-                dir_for_jpegs = os.path.join('jpegs' + '\\' + dirpath, filename_without_extension)
+                dir_for_jpegs = os.path.join(os.path.join('jpegs', dirpath), filename_without_extension)
                 if os.path.exists(dir_for_jpegs):
                     shutil.rmtree(dir_for_jpegs, ignore_errors=True)
                 os.makedirs(dir_for_jpegs)
