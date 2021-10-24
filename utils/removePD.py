@@ -5,6 +5,7 @@
 # Всякие имена организацией и людей будут опередлятся по признакам имен собственных. 
 # Томита парсер https://yandex.ru/dev/tomita/
 import re
+from natashaSearch import search
 
 test_data = "Это некоторый текст с персональными данными. Старченко Даниэлла Геннадьевна \
             родилась в г.Белгород. Место прописки: Белгородская обл. Белгородский р-н. п.Северный \
@@ -28,6 +29,10 @@ def detect_organization_name(data):
 def detect_position(data):
     # для определений должностей
     pass
+
+def detect_names(data=test_data):
+    data = re.sub(r"\b[А-Я][а-я]+(ко|ла|на|ев|ин|ина|ева|ов|ова|ян|ей|ва|на|ич|ир|вy|го)\b", "<NAME_REG>", data)
+    return data
 
 def detect_url(data=test_data):
     ## для определений сайтов и урлов
@@ -132,13 +137,18 @@ def detect_email(data=test_data):
 def removePersonalData(data: str):
     return detect_money(detect_url(detect_INN(detect_dates(detect_passport(detect_email(data))))))
 
-
-if __name__ == "__main__":
-    data = detect_email()
+def remove(data):
+    data = search(data)
+    data = detect_email(data)
     data = detect_passport(data)
     data = detect_post_codes(data)
     data = detect_dates(data)
     data = detect_INN(data)
     data = detect_url(data)
     data = detect_money(data)
+    data = detect_names(data)
+    return data
+
+if __name__ == "__main__":
+    data = remove(test_data)
     print(data)
