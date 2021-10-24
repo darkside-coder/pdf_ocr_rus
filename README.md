@@ -23,4 +23,4 @@
 ![postman_hack](https://user-images.githubusercontent.com/13415975/138608133-54d01142-2220-4f9e-9fdd-ee6f2549aaee.png)
 
 #### Структура решения
-![Структруа решения](https://user-images.githubusercontent.com/13415975/138608420-b2641531-bc24-489b-a37e-a6dc1baadb93.jpg)
+![Структруа решения](https://user-images.githubusercontent.com/13415975/138608460-c7dfa288-0d2f-45a5-a038-1ecf693ed264.jpg)
