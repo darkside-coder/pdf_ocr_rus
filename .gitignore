@@ -4,5 +4,3 @@ doc_txts/*
 jpegs/*
 temp/*
 __pycache__
-api/jpegs/*
-api/uploads/*
