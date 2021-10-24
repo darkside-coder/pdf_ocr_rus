@@ -23,6 +23,6 @@ def jpegToTextAPI(dirpath):
             temp_jpeg =os.path.join('temp', 'temp.jpg')
             im.save(temp_jpeg)
             text += pytesseract.image_to_string(Image.open(temp_jpeg), lang='rus')
-
-    text = pd_clear.removePersonalData(text)        
+    text = text.replace('\r', ' ').replace('\n', ' ')
+    text = pd_clear.remove(text)
     return text
